@@ -1,0 +1,169 @@
+﻿<krpano version="1.19" title="虚拟漫游">
+
+	<include url="skin/vtourskin.xml" />
+
+	<!-- customize skin settings: maps, gyro, webvr, thumbnails, tooltips, layout, design, ... -->
+	<skin_settings maps="false"
+	               maps_type="google"
+	               maps_bing_api_key=""
+	               maps_google_api_key=""
+	               maps_zoombuttons="false"
+	               gyro="true"
+	               webvr="true"
+	               webvr_gyro_keeplookingdirection="false"
+	               webvr_prev_next_hotspots="true"
+	               littleplanetintro="false"
+	               title="true"
+	               thumbs="true"
+	               thumbs_width="120" thumbs_height="80" thumbs_padding="10" thumbs_crop="0|40|240|160"
+	               thumbs_opened="false"
+	               thumbs_text="false"
+	               thumbs_dragging="true"
+	               thumbs_onhoverscrolling="false"
+	               thumbs_scrollbuttons="false"
+	               thumbs_scrollindicator="false"
+	               thumbs_loop="false"
+	               tooltips_buttons="false"
+	               tooltips_thumbs="false"
+	               tooltips_hotspots="false"
+	               tooltips_mapspots="false"
+	               deeplinking="false"
+	               loadscene_flags="MERGE"
+	               loadscene_blend="OPENBLEND(0.5, 0.0, 0.75, 0.05, linear)"
+	               loadscene_blend_prev="SLIDEBLEND(0.5, 180, 0.75, linear)"
+	               loadscene_blend_next="SLIDEBLEND(0.5,   0, 0.75, linear)"
+	               loadingtext="loading..."
+	               layout_width="100%"
+	               layout_maxwidth="814"
+	               controlbar_width="-24"
+	               controlbar_height="40"
+	               controlbar_offset="20"
+	               controlbar_offset_closed="-40"
+	               controlbar_overlap.no-fractionalscaling="10"
+	               controlbar_overlap.fractionalscaling="0"
+	               design_skin_images="vtourskin.png"
+	               design_bgcolor="0x2D3E50"
+	               design_bgalpha="0.8"
+	               design_bgborder="0"
+	               design_bgroundedge="1"
+	               design_bgshadow="0 4 10 0x000000 0.3"
+	               design_thumbborder_bgborder="3 0xFFFFFF 1.0"
+	               design_thumbborder_padding="2"
+	               design_thumbborder_bgroundedge="0"
+	               design_text_css="color:#FFFFFF; font-family:Arial;"
+	               design_text_shadow="1"
+	               />
+
+	<!--
+	    For an alternative skin design either change the <skin_settings> values 
+	    from above or optionally include one of the predefined designs from below.
+	-->
+	<!-- <include url="skin/vtourskin_design_flat_light.xml"  /> -->
+	<!-- <include url="skin/vtourskin_design_glass.xml"       /> -->
+	<!-- <include url="skin/vtourskin_design_ultra_light.xml" /> -->
+	<!-- <include url="skin/vtourskin_design_117.xml"         /> -->
+	<!-- <include url="skin/vtourskin_design_117round.xml"    /> -->
+	<!-- <include url="skin/vtourskin_design_black.xml"       /> -->
+
+
+	<!-- startup action - load the first scene -->
+	<action name="startup" autorun="onstart">
+		if(startscene === null OR !scene[get(startscene)], copy(startscene,scene[0].name); );
+		loadscene(get(startscene), null, MERGE);
+		if(startactions !== null, startactions() );
+	</action>
+
+	<action name="do_crop_animation" scope="local" args="framewidth, frameheight, framerate">
+	<!-- 定义局部变量 -->
+	calc(local.xframes, (caller.imagewidth /framewidth) BOR 0);
+	calc(local.frames, xframes * ((caller.imageheight / frameheight) BOR 0));
+	def(local.frame, integer, 0);
+	
+	<!-- 设置第一帧 -->
+	calc(caller.crop, '0|0|' + framewidth + '|' + frameheight);
+	
+	<!-- 动画部分 -->
+	setinterval(calc('crop_anim_' + caller.name), calc(1.0 / framerate),
+		if(caller.loaded,
+			inc(frame);
+			if(frame GE frames, if(caller.onlastframe !== null, callwith(caller, onlastframe() ) ); set(frame,0); );
+			mod(xpos, frame, xframes);
+			div(ypos, frame, xframes);
+			Math.floor(ypos);
+			mul(xpos, framewidth);
+			mul(ypos, frameheight);
+			calc(caller.crop, xpos + '|' + ypos + '|' + framewidth + '|' + frameheight);
+		  ,
+			<!-- 当热点移除时停止动画 -->
+			clearinterval(calc('crop_anim_' + caller.name));
+		);
+	);
+	</action>
+
+	<plugin name="soundinterface"
+        url.flash="%SWFPATH%/plugins/soundinterface.swf"
+        url.html5="%SWFPATH%/plugins/soundinterface.js"
+        rootpath=""
+        preload="true"
+        keep="true"
+    />
+
+	<action name="bgsnd_action" autorun="onstart">
+    playsound(bgsnd, "sound/M11-01-05-19.mp3", 0);
+	</action>
+
+	<scene name="scene_360_0136_Stitch_XHC" title="门口" onstart="" thumburl="panos/360_0136_Stitch_XHC.tiles/thumb.jpg" lat="" lng="" heading="">
+
+		<view hlookat="-5.136" vlookat="8.199" fovtype="MFOV" fov="120.000" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/360_0136_Stitch_XHC.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/360_0136_Stitch_XHC.tiles/pano_%s.jpg" />
+		</image>
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="-29.550" atv="25.205" linkedscene="scene_360_0137_stitch_xhc" url="animatedhotspot_black.png"  onloaded="do_crop_animation(64,64, 60)"/>
+
+	</scene>
+
+	<scene name="scene_360_0137_Stitch_XHC" title="中央" onstart="" thumburl="panos/360_0137_Stitch_XHC.tiles/thumb.jpg" lat="" lng="" heading="">
+
+		<view hlookat="2.839" vlookat="6.619" fovtype="MFOV" fov="120.000" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/360_0137_Stitch_XHC.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/360_0137_Stitch_XHC.tiles/pano_%s.jpg" />
+		</image>
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="-1.805" atv="24.756" linkedscene="scene_360_0138_stitch_xhc" url="animatedhotspot_black.png"  onloaded="do_crop_animation(64,64, 60)"/>
+		<hotspot name="spot2" style="skin_hotspotstyle" ath="-71.437" atv="28.721" linkedscene="scene_360_0139_stitch_xhc" url="animatedhotspot_black.png"  onloaded="do_crop_animation(64,64, 60)"/>
+
+	</scene>
+
+	<scene name="scene_360_0138_Stitch_XHC" title="工作区" onstart="" thumburl="panos/360_0138_Stitch_XHC.tiles/thumb.jpg" lat="" lng="" heading="">
+
+		<view hlookat="379.241" vlookat="25.486" fovtype="MFOV" fov="120.000" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/360_0138_Stitch_XHC.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/360_0138_Stitch_XHC.tiles/pano_%s.jpg" />
+		</image>
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="-101.188" atv="17.812" linkedscene="scene_360_0137_stitch_xhc" url="animatedhotspot_black.png"  onloaded="do_crop_animation(64,64, 60)"/>
+
+	</scene>
+
+	<scene name="scene_360_0139_Stitch_XHC" title="镜头下" onstart="" thumburl="panos/360_0139_Stitch_XHC.tiles/thumb.jpg" lat="" lng="" heading="">
+
+		<view hlookat="-3.155" vlookat="-1.031" fovtype="MFOV" fov="120.000" maxpixelzoom="2.0" fovmin="70" fovmax="140" limitview="auto" />
+
+		<preview url="panos/360_0139_Stitch_XHC.tiles/preview.jpg" />
+
+		<image>
+			<cube url="panos/360_0139_Stitch_XHC.tiles/pano_%s.jpg" />
+		</image>
+		<hotspot name="spot1" style="skin_hotspotstyle" ath="11.807" atv="18.532" linkedscene="scene_360_0137_stitch_xhc" url="animatedhotspot_black.png"  onloaded="do_crop_animation(64,64, 60)"/>
+
+	</scene>
+
+
+</krpano>
