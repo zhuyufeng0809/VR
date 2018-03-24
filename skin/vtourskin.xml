@@ -303,7 +303,6 @@
 	       html=""
 	       />
 
-
 	<!-- skin layout -->
 	<layer name="skin_layer" keep="true" type="container" align="top" width="get:skin_settings.layout_width" maxwidth="get:skin_settings.layout_maxwidth" height="100%" maskchildren="true" visible="false" bgcapture="false" zorder="1">
 		<layer name="skin_scroll_window" type="container" align="bottom" width="100%" height="100%" x="0" y="calc:skin_settings.controlbar_offset + skin_settings.controlbar_height - skin_settings.controlbar_overlap" maskchildren="true" onloaded="skin_calc_opened_closed();" zorder="1">
@@ -400,6 +399,7 @@
 
 
 	<!-- skin actions -->
+
 	<action name="skin_startup" scope="local">
 
 		<!-- apply skin settings on startup -->
